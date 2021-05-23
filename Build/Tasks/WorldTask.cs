@@ -11,12 +11,6 @@ namespace Build.Tasks
         // Tasks can be asynchronous
         public override async Task RunAsync(BuildContext context)
         {
-            if (context.Delay)
-            {
-                context.Log.Information("Waiting...");
-                await Task.Delay(context.DelayMilliseconds);
-            }
-
             context.Log.Information("World");
         }
     }

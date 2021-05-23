@@ -8,6 +8,7 @@ namespace Build
         {
             return new CakeHost()
                 .UseContext<BuildContext>()
+                .ConfigureServices(serviceCollection => serviceCollection.RegisterServices())
                 .Run(args);
         }
     }
