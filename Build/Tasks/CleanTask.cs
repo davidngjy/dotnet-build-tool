@@ -1,38 +1,44 @@
-﻿using Build.Handlers;
-using Cake.Common.Tools.DotNetCore;
+﻿using Cake.Common.Tools.DotNetCore;
 using Cake.Frosting;
 using System;
 using System.Linq;
+using Build.Contexts;
+using Build.Model;
+using Cake.Common.Tools.DotNetCore.Clean;
+using Spectre.Console;
 
 namespace Build.Tasks
 {
-	[TaskName("Clean Build Outputs")]
-	public class CleanTask : FrostingTask<BuildContext>
+	[TaskName("Clean Build Artifacts")]
+	public class CleanTask : FrostingTask<Context>
 	{
-		private readonly IProjectFileHandler _projectFileHandler;
+		private readonly IProjectDiscoverer _projectDiscoverer;
 
-		public CleanTask(IProjectFileHandler projectFileHandler)
-		{
-			_projectFileHandler = projectFileHandler;
-		}
+		public CleanTask(IProjectDiscoverer projectDiscoverer) => _projectDiscoverer = projectDiscoverer;
 
-		public override void Run(BuildContext context)
+		public override void Run(Context context)
 		{
-			_projectFileHandler
-				.GetAllProjectFilePaths()
+			_projectDiscoverer
+				.GetAllProjects()
 				.AsParallel()
-				.ForAll(csprojPath => CleanProjectOutputWithExceptionHandling(context, csprojPath));
+				.ForAll(project => CleanProjectArtifactWithExceptionHandling(context, project));
 		}
 
-		private void CleanProjectOutputWithExceptionHandling(BuildContext context, string csprojPath)
+		private void CleanProjectArtifactWithExceptionHandling(Context context, Project project)
 		{
 			try
 			{
-				context.DotNetCoreClean(csprojPath);
+				context.DotNetCoreClean(project.AbsolutePath, new DotNetCoreCleanSettings
+				{
+					Verbosity = DotNetCoreVerbosity.Quiet,
+					NoLogo = true
+				});
+
+				AnsiConsole.MarkupLine($"Cleaned {project.ProjectName}. :check_mark:");
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				
+				AnsiConsole.MarkupLine($"Failed {project.ProjectName}. :cross_mark:");
 			}
 		}
 	}

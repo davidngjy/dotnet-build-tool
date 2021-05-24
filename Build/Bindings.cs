@@ -1,4 +1,4 @@
-﻿using Build.Handlers;
+﻿using Build.Contexts;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Build
@@ -7,7 +7,7 @@ namespace Build
 	{
 		public static void RegisterServices(this IServiceCollection serviceCollection)
 		{
-			serviceCollection.AddSingleton<IProjectFileHandler, ProjectFileHandler>();
+			serviceCollection.AddSingleton<IProjectDiscoverer, ProjectDiscoverer>();
 		}
 	}
 }

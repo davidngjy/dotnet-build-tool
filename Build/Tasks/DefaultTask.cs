@@ -1,11 +1,9 @@
-using Build.Handlers;
-using Cake.Core;
 using Cake.Frosting;
 
 namespace Build.Tasks
 {
     [TaskName("Default")]
-    [IsDependentOn(typeof(CleanTask))]
+    [IsDependentOn(typeof(UnitTestTask))]
     public class DefaultTask : FrostingTask
     {
     }

@@ -1,3 +1,6 @@
+using System;
+using System.Text;
+using Build.Contexts;
 using Cake.Frosting;
 
 namespace Build
@@ -6,8 +9,10 @@ namespace Build
     {
         public static int Main(string[] args)
         {
+	        Console.OutputEncoding = Encoding.UTF8;
+
             return new CakeHost()
-                .UseContext<BuildContext>()
+                .UseContext<Context>()
                 .ConfigureServices(serviceCollection => serviceCollection.RegisterServices())
                 .Run(args);
         }
